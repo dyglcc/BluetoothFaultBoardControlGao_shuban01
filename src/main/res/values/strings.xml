@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">多媒体故障模拟系统</string>
+    <string name="action_logout">退出</string>
+    <string name="Button_Back_BeCanceled">抱歉，返回键已被屏蔽！</string>
+    <string name="Button_Ignition">点火</string>
+    <string name="Button_Start">启动</string>
+    <string name="Button_ShutDown">熄火</string>
+    <string name="TheFailurePointSet">故障点设置</string>
+    <string name="Button_PointOfFailureThat">故障点说明</string>
+    <string name="Button_StateIsRead">状态读取</string>
+    <string name="Button_SetAll">全部设置</string>
+    <string name="Button_ClearAll">全部清除</string>
+    <string name="Back">返回</string>
+    <string name="action_connect">蓝牙连接</string>
+
+    <!-- Bluetooth Service -->
+    <string name="bluetooth_connect_failed">连接失败</string>
+    <string name="bluetooth_search">搜索</string>
+    <string name="bluetooth_searching">正在搜索设备,请稍等...</string>
+    <!-- Bluetooth Service End -->
+
+    <string name="login_id_hint">请输入账号...</string>
+    <string name="inputpasswordhint">输入密码...</string>
+    <string name="shortfault">短路故障</string>
+    <string name="falsefault">虚接故障</string>
+    <string name="breakfault">断路故障</string>
+    <string name="loginbtnstring">登陆</string>
+
+</resources>

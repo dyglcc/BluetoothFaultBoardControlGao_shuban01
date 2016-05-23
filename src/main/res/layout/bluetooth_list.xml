@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/listView_bluetooth"
+        android:layout_width="fill_parent"
+        android:layout_height="300dp" />
+
+    <Button
+        android:id="@+id/Button_Search_BluetoothDevices"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+         android:background="@drawable/yellow" 
+        android:text="@string/bluetooth_search" />
+
+    <Button
+        android:id="@+id/Button_BluetoothMenu_Back"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/yellow" 
+        android:text="@string/Back" />
+
+</LinearLayout>
