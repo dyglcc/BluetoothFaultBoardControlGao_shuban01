@@ -26,6 +26,7 @@
     <string name="shortfault">短路故障</string>
     <string name="falsefault">虚接故障</string>
     <string name="breakfault">断路故障</string>
+    <string name="breakfault_01">故障设置</string>
     <string name="loginbtnstring">登陆</string>
 
 </resources>

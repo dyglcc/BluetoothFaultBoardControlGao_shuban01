@@ -73,7 +73,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	 * 初始化继电器状态数据
 	 */
 	private void initData() {
-		
+
 		for (int i = 0; i < 120; i++) {
 			shortList.add(new Relay(i + 1, i + 1, Relay.Green));
 		}
@@ -257,33 +257,34 @@ public class MainActivity extends Activity implements OnClickListener,
 
 			ArrayList<TabHost.TabSpec> hostlist = new ArrayList<TabHost.TabSpec>(
 					2);
-			TabHost.TabSpec tabspec1 = tabHost.newTabSpec("1");
-			tabspec1.setContent(R.id.GridView_TheFailurePointSet);
-			TextView indicatorV = new TextView(this);
-			indicatorV.setGravity(Gravity.CENTER);
-			indicatorV.setBackgroundResource(R.drawable.channelsbg);
-			indicatorV.setTextSize(16);
-			indicatorV.setText(R.string.shortfault);
-			tabspec1.setIndicator(indicatorV);
-			hostlist.add(tabspec1);
+//			TabHost.TabSpec tabspec1 = tabHost.newTabSpec("1");
+//			tabspec1.setContent(R.id.GridView_TheFailurePointSet);
+//			TextView indicatorV = new TextView(this);
+//			indicatorV.setGravity(Gravity.CENTER);
+//			indicatorV.setBackgroundResource(R.drawable.channelsbg);
+//			indicatorV.setTextSize(16);
+//			indicatorV.setText(R.string.shortfault);
+//			tabspec1.setIndicator(indicatorV);
+//			hostlist.add(tabspec1);
+//
+//			tabspec1 = tabHost.newTabSpec("2");
+//			tabspec1.setContent(R.id.GridView_TheFailurePointSet);
+//			indicatorV = new TextView(this);
+//			indicatorV.setGravity(Gravity.CENTER);
+//			indicatorV.setBackgroundResource(R.drawable.channelsbg);
+//			indicatorV.setTextSize(16);
+//			indicatorV.setText(R.string.falsefault);
+//			tabspec1.setIndicator(indicatorV);
+//			hostlist.add(tabspec1);
 
-			tabspec1 = tabHost.newTabSpec("2");
+            TabHost.TabSpec tabspec1 = tabHost.newTabSpec("0");
 			tabspec1.setContent(R.id.GridView_TheFailurePointSet);
-			indicatorV = new TextView(this);
+            TextView indicatorV = new TextView(this);
 			indicatorV.setGravity(Gravity.CENTER);
 			indicatorV.setBackgroundResource(R.drawable.channelsbg);
 			indicatorV.setTextSize(16);
-			indicatorV.setText(R.string.falsefault);
-			tabspec1.setIndicator(indicatorV);
-			hostlist.add(tabspec1);
-
-			tabspec1 = tabHost.newTabSpec("0");
-			tabspec1.setContent(R.id.GridView_TheFailurePointSet);
-			indicatorV = new TextView(this);
-			indicatorV.setGravity(Gravity.CENTER);
-			indicatorV.setBackgroundResource(R.drawable.channelsbg);
-			indicatorV.setTextSize(16);
-			indicatorV.setText(R.string.breakfault);
+//			indicatorV.setText(R.string.breakfault);
+			indicatorV.setText(R.string.breakfault_01);
 			tabspec1.setIndicator(indicatorV);
 			hostlist.add(tabspec1);
 
@@ -293,6 +294,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			}
 
 			tabHost.setCurrentTab(0);
+
 			View view = tabWidget.getChildAt(0);
 			view.setBackgroundDrawable(getResources().getDrawable(
 					R.drawable.presschannelbg));
@@ -322,6 +324,8 @@ public class MainActivity extends Activity implements OnClickListener,
 					}
 				}
 			});
+
+			changeListData("0");
 
 		}
 
