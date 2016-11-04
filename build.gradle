@@ -1,8 +1,17 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.2'
+    }
+}
 apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 16
-    buildToolsVersion "19.1.0"
+    buildToolsVersion '21.1.0'
 
     defaultConfig {
         applicationId "com.xiaobailong.bluetoothfaultboardcontrol"

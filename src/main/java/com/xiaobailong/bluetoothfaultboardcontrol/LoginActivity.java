@@ -30,7 +30,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends BaseActivity {
 
 	Button logigBtn;
 	EditText idEdit;
@@ -158,8 +158,8 @@ public class LoginActivity extends Activity {
 	}
 
 	public void getSdcardPath() {
-		if (android.os.Environment.getExternalStorageState().equals(
-				android.os.Environment.MEDIA_MOUNTED)) {
+		if (Environment.getExternalStorageState().equals(
+				Environment.MEDIA_MOUNTED)) {
 			hasSdcard=true;
 			savePath= Environment.getExternalStorageDirectory().getAbsolutePath()+"/autoblue/";
 //			Toast.makeText(this, sdcardPath, Toast.LENGTH_LONG).show();

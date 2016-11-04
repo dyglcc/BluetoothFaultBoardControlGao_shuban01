@@ -20,7 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PointOfFailureThatDialog extends Dialog implements android.view.View.OnClickListener
+public class PointOfFailureThatDialog extends Dialog implements View.OnClickListener
 {
 
 	private Context context = null;
