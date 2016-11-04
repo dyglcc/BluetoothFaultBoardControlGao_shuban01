@@ -92,6 +92,9 @@ public class MainActivity extends Activity implements OnClickListener,
 	 */
 	private void initData() {
 
+        shortList.clear();
+        breakfaultList.clear();
+        falseList.clear();
         for (int i = 0; i < 6; i++) {
             shortList.add(new Relay(i + 1, i + 1, Relay.Green));
         }
@@ -246,7 +249,7 @@ public class MainActivity extends Activity implements OnClickListener,
                     }
 
                     MediaFileListDialog bluetoothDevicesListDialog = new MediaFileListDialog(
-                            MainActivity.this, getDirFilesDir(file));
+                            MainActivity.this);
                     bluetoothDevicesListDialog.show();
                 } else {
                     nosdcard();
@@ -260,14 +263,10 @@ public class MainActivity extends Activity implements OnClickListener,
         Toast.makeText(MainActivity.this, "没有sdcard,无法显示教学文件", Toast.LENGTH_LONG).show();
     }
 
-    private ArrayList<String> getDirFilesDir(File file) {
+    public static ArrayList<String> getDirFilesDir(File file) {
         ArrayList<String> list = new ArrayList<String>();
-        if (file.isDirectory()) {
-            for (File f : file.listFiles()) {
-                if (f.isFile()) {
-                    list.add(f.getAbsolutePath());
-                }
-            }
+        for (File f : file.listFiles()) {
+            list.add(f.getAbsolutePath());
         }
         return list;
     }
@@ -287,6 +286,7 @@ public class MainActivity extends Activity implements OnClickListener,
                 break;
             case R.id.action_close:
                 this.faultboardOption.closeBluetoothSocket();
+                initData();
                 break;
             case R.id.action_edit_title:
                 editTitle();

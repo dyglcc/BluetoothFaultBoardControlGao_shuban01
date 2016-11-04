@@ -11,6 +11,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.xiaobailong.bluetoothfaultboardcontrol.MainActivity;
 import com.xiaobailong.bluetoothfaultboardcontrol.MediaListAdapter;
 import com.xiaobailong.bluetoothfaultboardcontrol.R;
 import com.xiaobailong.tools.ConstValue;
@@ -18,10 +19,12 @@ import com.xiaobailong.tools.ConstValue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
 public class MediaFileListDialog extends Dialog implements OnItemClickListener, View.OnClickListener {
 
 
+    private Stack<String> paths = new Stack<String>();
     private Context context;
     private HashMap<String, String> type = new HashMap<String, String>() {
         {
@@ -93,17 +96,26 @@ public class MediaFileListDialog extends Dialog implements OnItemClickListener, 
             put("", "*/*");
         }
     };
-
-
-    public MediaFileListDialog(Context context, ArrayList<String> list) {
+    private ArrayList<String> list;
+    private MediaListAdapter listAdapter;
+    ListView listView;
+    public MediaFileListDialog(Context context) {
         super(context);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
         setTitle("SDCARD根目录/" + ConstValue.dir);
+
+        File file = new File(ConstValue.get_DIR());
+        if (!file.exists()) {
+            Toast.makeText(context, "文件不存在", Toast.LENGTH_LONG).show();
+            return;
+        }
+        list = MainActivity.getDirFilesDir(file);
+        paths.push(ConstValue.get_DIR());
         this.context = context;
         setContentView(R.layout.media_file_list);
-        ListView listView = (ListView) findViewById(R.id.listView_media_file);
-        MediaListAdapter bluetoothDevicesListAdapter = new MediaListAdapter(context, list);
-        listView.setAdapter(bluetoothDevicesListAdapter);
+         listView= (ListView) findViewById(R.id.listView_media_file);
+        listAdapter = new MediaListAdapter(context, list);
+        listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(this);
 
         findViewById(R.id.Button_Media_file_Back).setOnClickListener(this);
@@ -113,23 +125,42 @@ public class MediaFileListDialog extends Dialog implements OnItemClickListener, 
     public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
         String path = (String) arg0.getAdapter().getItem(position);
         File file = new File(path);
-        String ext = path.substring(path.lastIndexOf("."), path.length());
-        String dtype;
-        if (type.containsKey(ext)) {
-            dtype = type.get(ext);
+        if (!file.exists()) {
+            Toast.makeText(context, "文件不存在！", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (file.isDirectory()) {
+            list.clear();
+            list = MainActivity.getDirFilesDir(file);
+//            listAdapter.notifyDataSetChanged();
+            listAdapter = new MediaListAdapter(context, list);
+            listView.setAdapter(listAdapter);
+            listView.setOnItemClickListener(this);
+            paths.push(path);
         } else {
-            dtype = type.get("");
-        }
-        Intent target = new Intent(Intent.ACTION_VIEW);
-        target.setDataAndType(Uri.fromFile(file), dtype);
-        target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            String ext = path.substring(path.lastIndexOf("."), path.length());
+            String dtype;
+            if (type.containsKey(ext)) {
+                dtype = type.get(ext);
+            } else {
+                dtype = type.get("");
+            }
+            Intent target = new Intent(Intent.ACTION_VIEW);
+            target.setDataAndType(Uri.fromFile(file), dtype);
+            target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
-        Intent intent = Intent.createChooser(target, "Open File");
-        try {
-            context.startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            // Instruct the user to install a PDF reader here, or something
+            Intent intent = Intent.createChooser(target, "Open File");
+            try {
+                context.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                // Instruct the user to install a PDF reader here, or something
+            }
+            dissss();
         }
+
+    }
+
+    private void dissss() {
         dismiss();
         type.clear();
     }
@@ -138,12 +169,27 @@ public class MediaFileListDialog extends Dialog implements OnItemClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.Button_Media_file_Back:
-                dismiss();
-                type.clear();
+                paths.pop();
+
+                if (paths.isEmpty()) {
+                    dissss();
+                } else {
+                    String path = paths.peek();
+                    File file = new File(path);
+                    if (!file.exists()) {
+                        Toast.makeText(context, "文件不存在！", Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    list.clear();
+                    list = MainActivity.getDirFilesDir(file);
+                    listAdapter = new MediaListAdapter(context, list);
+                    listView.setAdapter(listAdapter);
+                    listView.setOnItemClickListener(this);
+//                    listAdapter.notifyDataSetChanged();
+                }
                 break;
             case R.id.Button_Search_BluetoothDevices:
-                dismiss();
-                type.clear();
+                dissss();
                 break;
         }
     }
