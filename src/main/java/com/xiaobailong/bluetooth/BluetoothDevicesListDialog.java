@@ -12,7 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class BluetoothDevicesListDialog extends Dialog implements OnItemClickListener,android.view.View.OnClickListener
+public class BluetoothDevicesListDialog extends Dialog implements OnItemClickListener,View.OnClickListener
 {
 
 	private BluetoothListener blueToothListener = null;

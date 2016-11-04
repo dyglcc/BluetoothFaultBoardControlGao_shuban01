@@ -1,4 +1,7 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+<RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
@@ -78,6 +81,7 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
+        android:id="@+id/line01"
         android:layout_height="wrap_content"
         android:layout_below="@id/LL_midlleContainer"
         android:layout_weight="4"
@@ -124,5 +128,57 @@
             android:text="@string/Button_ClearAll" />
         <!-- android:layout_marginRight="50dp" -->
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line01"
+        android:layout_weight="4"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/Button_Mode_Teach02"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:textSize="13sp"
+            android:background="@drawable/yellow"
+            android:text="@string/Button_Mode_Teach" />
+        <!-- android:layout_marginLeft="25dp"
+            android:layout_marginRight="50dp" -->
+
+        <Button
+            android:id="@+id/Button_an02"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:textSize="15sp"
+            android:visibility="invisible"
+            android:background="@drawable/yellow"
+            android:text="@string/Button_StateIsRead" />
+        <!-- android:layout_marginRight="50dp" -->
+
+        <Button
+            android:id="@+id/Button_an03"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:textSize="15sp"
+            android:background="@drawable/yellow"
+            android:visibility="invisible"
+            android:text="@string/Button_SetAll" />
+        <!-- android:layout_marginRight="50dp" -->
+
+        <Button
+            android:id="@+id/Button_an04"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:textSize="15sp"
+            android:visibility="invisible"
+            android:background="@drawable/yellow"
+            android:text="@string/Button_ClearAll" />
+        <!-- android:layout_marginRight="50dp" -->
+    </LinearLayout>
 
 </RelativeLayout>
+</ScrollView>
