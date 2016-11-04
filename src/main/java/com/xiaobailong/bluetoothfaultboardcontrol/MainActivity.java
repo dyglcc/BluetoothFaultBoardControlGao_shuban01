@@ -38,7 +38,7 @@ import com.xiaobailong.bluetooth.MediaFileListDialog;
 import com.xiaobailong.titile.WriteTitleActivity;
 import com.xiaobailong.tools.ConstValue;
 
-public class MainActivity extends Activity implements OnClickListener,
+public class MainActivity extends BaseActivity implements OnClickListener,
 		OnTouchListener, OnScrollListener {
 
 	public static final int ShortTable = 0;
