@@ -9,11 +9,14 @@
     <string name="Button_ShutDown">熄火</string>
     <string name="TheFailurePointSet">故障点设置</string>
     <string name="Button_PointOfFailureThat">故障点说明</string>
+    <string name="Button_Mode_Teach">教学模式</string>
     <string name="Button_StateIsRead">状态读取</string>
     <string name="Button_SetAll">全部设置</string>
     <string name="Button_ClearAll">全部清除</string>
     <string name="Back">返回</string>
     <string name="action_connect">蓝牙连接</string>
+    <string name="action_close">断开连接</string>
+    <string name="action_set_title">设置标题文字</string>
 
     <!-- Bluetooth Service -->
     <string name="bluetooth_connect_failed">连接失败</string>
@@ -27,5 +30,9 @@
     <string name="falsefault">虚接故障</string>
     <string name="breakfault">断路故障</string>
     <string name="loginbtnstring">登陆</string>
+
+    <!-- media file -->
+
+    <string name="media_file_cancle">搜索</string>
 
 </resources>
