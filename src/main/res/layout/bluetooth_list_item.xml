@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <TextView 
+    <TextView
         android:id="@+id/textView_ListView_Item"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
