@@ -1,7 +1,17 @@
 package com.xiaobailong.bluetoothfaultboardcontrol;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +33,10 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TabHost.OnTabChangeListener;
+
+import com.xiaobailong.bluetooth.MediaFileListDialog;
+import com.xiaobailong.titile.WriteTitleActivity;
+import com.xiaobailong.tools.ConstValue;
 
 public class MainActivity extends Activity implements OnClickListener,
 		OnTouchListener, OnScrollListener {
@@ -60,31 +74,35 @@ public class MainActivity extends Activity implements OnClickListener,
 
 	private GridView theFailurePointSetGV = null;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		initHandler();
-		initData();
-		initView();
-	}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        initSDcard();
+        initHandler();
+        initData();
+        initView();
+
+
+    }
 
 	/**
 	 * 初始化继电器状态数据
 	 */
 	private void initData() {
 
-		for (int i = 0; i < 120; i++) {
-			shortList.add(new Relay(i + 1, i + 1, Relay.Green));
-		}
+        for (int i = 0; i < 6; i++) {
+            shortList.add(new Relay(i + 1, i + 1, Relay.Green));
+        }
 
-		for (int i = 0; i < 120; i++) {
-			breakfaultList.add(new Relay(i + 1, i + 1, Relay.Green));
-		}
+        for (int i = 0; i < 120; i++) {
+            breakfaultList.add(new Relay(i + 1, i + 1, Relay.Green));
+        }
 
-		for (int i = 0; i < 120; i++) {
-			falseList.add(new Relay(i + 1, i + 1, Relay.Green));
-		}
+        for (int i = 0; i < 20; i++) {
+            falseList.add(new Relay(i + 1, i + 1, Relay.Green));
+        }
 
 		faultboardOption = new FaultboardOption(this, faultboardOptionHandler,
 				shortList);
@@ -118,100 +136,192 @@ public class MainActivity extends Activity implements OnClickListener,
 		};
 	}
 
-	private void initView() {
-		//创建中部标签浏览界面
-		createTabHost();
-		// 点火
-		ignitionButton = (Button) findViewById(R.id.Button_Ignition);
-		ignitionButton.setOnClickListener(this);
-		// 启动
-		startButton = (Button) findViewById(R.id.Button_Start);
-		startButton.setOnClickListener(this);
-		startButton.setOnTouchListener(this);
-		// 熄火
-		shutDownButton = (Button) findViewById(R.id.Button_ShutDown);
-		shutDownButton.setOnClickListener(this);
-		// 故障点说明
-		findViewById(R.id.Button_PointOfFailureThat).setOnClickListener(this);
-		// 状态读取
-		findViewById(R.id.Button_StateIsRead).setOnClickListener(this);
-		// 全部设置
-		findViewById(R.id.Button_SetAll).setOnClickListener(this);
-		// 全部清除
-		findViewById(R.id.Button_ClearAll).setOnClickListener(this);
-	}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void initSDcard() {
+        if (ConstValue.haveSdcard()) {
+            File file = new File(ConstValue.get_DIR());
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            File title = new File(ConstValue.get_title_File());
+            if (!title.exists()) {
+                try {
+                    title.createNewFile();
+                } catch (IOException e) {
+                    Toast.makeText(MainActivity.this, "创建文件失败了！！", Toast.LENGTH_LONG).show();
+                }
+            }
+        } else {
+            nosdcard();
+        }
+    }
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.Button_Ignition:// 点火
-			if (hasStarted) {
-				Toast.makeText(this, "The machine had be started !",
-						Toast.LENGTH_SHORT).show();
-			} else {
-				hasStarted = true;
-				Toast.makeText(this, "The machine be started !",
-						Toast.LENGTH_SHORT).show();
-				faultboardOption.ignition(R.id.Button_Ignition);
-			}
-			break;
-		case R.id.Button_ShutDown:// 熄火
-			if (hasStarted) {
-				hasStarted = false;
-				Toast.makeText(this, "The machine be shut down !",
-						Toast.LENGTH_SHORT).show();
-				faultboardOption.fireDown((byte) 0x65, R.id.Button_ShutDown);
-			} else {
-				Toast.makeText(this, "The machine had not be started !",
-						Toast.LENGTH_SHORT).show();
-			}
-			break;
-		case R.id.Button_PointOfFailureThat:// 故障点说明
-			PointOfFailureThatDialog pointOfFailureThatDialog = new PointOfFailureThatDialog(
-					this);
-			pointOfFailureThatDialog.show();
-			break;
-		case R.id.Button_StateIsRead:// 状态读取
-			faultboardOption.stateIsRead(R.id.Button_StateIsRead);
-			break;
-		case R.id.Button_SetAll:// 全部设置
-			faultboardOption.setAll(R.id.Button_SetAll);
-			break;
-		case R.id.Button_ClearAll:// 全部清除
-			faultboardOption.clearAll(R.id.Button_ClearAll);
-			break;
-		}
-	}
+    public static String readTitleStr(Context context, File file) {
+        String str = "";
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            while ((str = reader.readLine()) != null) {
+                return str;
+            }
+        } catch (FileNotFoundException e) {
+            Toast.makeText(context, "读取文件出错！", Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            Toast.makeText(context, "读取文件出错！", Toast.LENGTH_LONG).show();
+        }
+//                todo 创建修改标题的文件，读取文件，修改文件更新标题。
+        return str;
+    }
+
+    private void initView() {
+        //创建中部标签浏览界面
+        createTabHost();
+        // 点火
+        ignitionButton = (Button) findViewById(R.id.Button_Ignition);
+        ignitionButton.setOnClickListener(this);
+        // 启动
+        startButton = (Button) findViewById(R.id.Button_Start);
+        startButton.setOnClickListener(this);
+        startButton.setOnTouchListener(this);
+        // 熄火
+        shutDownButton = (Button) findViewById(R.id.Button_ShutDown);
+        shutDownButton.setOnClickListener(this);
+        // 故障点说明
+        findViewById(R.id.Button_PointOfFailureThat).setOnClickListener(this);
+        // 状态读取
+        findViewById(R.id.Button_StateIsRead).setOnClickListener(this);
+        // 全部设置
+        findViewById(R.id.Button_SetAll).setOnClickListener(this);
+        // 全部清除
+        findViewById(R.id.Button_ClearAll).setOnClickListener(this);
+        // 全部清除
+        findViewById(R.id.Button_Mode_Teach02).setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.Button_Ignition:// 点火
+                if (hasStarted) {
+                    Toast.makeText(this, "The machine had be started !",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    hasStarted = true;
+                    Toast.makeText(this, "The machine be started !",
+                            Toast.LENGTH_SHORT).show();
+                    faultboardOption.ignition(R.id.Button_Ignition);
+                }
+                break;
+            case R.id.Button_ShutDown:// 熄火
+                if (hasStarted) {
+                    hasStarted = false;
+                    Toast.makeText(this, "The machine be shut down !",
+                            Toast.LENGTH_SHORT).show();
+                    faultboardOption.fireDown((byte) 0x65, R.id.Button_ShutDown);
+                } else {
+                    Toast.makeText(this, "The machine had not be started !",
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.Button_PointOfFailureThat:// 故障点说明
+                PointOfFailureThatDialog pointOfFailureThatDialog = new PointOfFailureThatDialog(
+                        this);
+                pointOfFailureThatDialog.show();
+                break;
+            case R.id.Button_StateIsRead:// 状态读取
+                faultboardOption.stateIsRead(R.id.Button_StateIsRead);
+                break;
+            case R.id.Button_SetAll:// 全部设置
+                faultboardOption.setAll(R.id.Button_SetAll);
+                break;
+            case R.id.Button_ClearAll:// 全部清除
+                faultboardOption.clearAll(R.id.Button_ClearAll);
+                break;
+            case R.id.Button_Mode_Teach02:// 教学模式
+//			todo 打开指定文件夹 /sdcard/
+                if (ConstValue.haveSdcard()) {
+                    File file = new File(ConstValue.get_DIR());
+                    if (!file.exists()) {
+                        Toast.makeText(MainActivity.this, "没有文件可以显示！文件路径 " + ConstValue.get_DIR(), Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    MediaFileListDialog bluetoothDevicesListDialog = new MediaFileListDialog(
+                            MainActivity.this, getDirFilesDir(file));
+                    bluetoothDevicesListDialog.show();
+                } else {
+                    nosdcard();
+                }
+
+                break;
+        }
+    }
+
+    private void nosdcard() {
+        Toast.makeText(MainActivity.this, "没有sdcard,无法显示教学文件", Toast.LENGTH_LONG).show();
+    }
+
+    private ArrayList<String> getDirFilesDir(File file) {
+        ArrayList<String> list = new ArrayList<String>();
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) {
+                if (f.isFile()) {
+                    list.add(f.getAbsolutePath());
+                }
+            }
+        }
+        return list;
+    }
 
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_settings:
-			this.faultboardOption.bluetoothConnect();
-			break;
-		case R.id.action_exit:
-			finish();
-			break;
-		default:
-			break;
-		}
-		return true;
-	}
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                this.faultboardOption.bluetoothConnect();
+                break;
+            case R.id.action_exit:
+                finish();
+                break;
+            case R.id.action_close:
+                this.faultboardOption.closeBluetoothSocket();
+                break;
+            case R.id.action_edit_title:
+                editTitle();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
 
-	protected void onResume() {
-		super.onResume();
+    private void editTitle() {
+        startActivityForResult(new Intent(MainActivity.this, WriteTitleActivity.class), 100);
+    }
 
-	}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100) {
+            if (resultCode == Activity.RESULT_OK) {
+                File file = new File(ConstValue.get_title_File());
+                String title = readTitleStr(MainActivity.this, file);
+                if (title == null || title.equals("")) {
+                    title = getString(R.string.app_name);
+                }
+                getActionBar().setTitle(title);
+            }
+        }
+    }
 
-	@Override
-	public void finish() {
-		faultboardOption.closeBluetoothSocket();
-		super.finish();
-	}
+    @Override
+    public void finish() {
+        faultboardOption.closeBluetoothSocket();
+        super.finish();
+    }
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

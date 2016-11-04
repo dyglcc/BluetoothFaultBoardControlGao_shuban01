@@ -246,7 +246,7 @@ public class FaultboardOption implements BluetoothListener {
 	}
 
 	private Handler bluetoothListenerHandler = new Handler() {
-		public void handleMessage(android.os.Message msg) {
+		public void handleMessage(Message msg) {
 			switch (msg.arg1) {
 			case DataReadWrong:
 				Toast.makeText(
