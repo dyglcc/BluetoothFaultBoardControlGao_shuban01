@@ -314,6 +314,8 @@ public class MainActivity extends BaseActivity implements OnClickListener,
                 break;
             case R.id.action_close:
                 this.faultboardOption.closeBluetoothSocket();
+                Toast.makeText(MainActivity.this, "连接已断开",
+                        Toast.LENGTH_SHORT).show();
                 initData(getCurentTab());
                 break;
             case R.id.action_edit_title:
