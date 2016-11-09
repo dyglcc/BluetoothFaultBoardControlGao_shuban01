@@ -39,40 +39,52 @@ import com.xiaobailong.titile.WriteTitleActivity;
 import com.xiaobailong.tools.ConstValue;
 
 public class MainActivity extends BaseActivity implements OnClickListener,
-		OnTouchListener, OnScrollListener {
+        OnTouchListener, OnScrollListener {
 
-	public static final int ShortTable = 0;
-	public static final int FalseTable = 1;
-	public static final int BreakTable = 2;
-	public static int TableState = ShortTable;
+    public static final int ShortTable = 0;
+    public static final int FalseTable = 1;
+    public static final int BreakTable = 2;
+    public static int TableState = ShortTable;
 
-	/** 短路1-120继电器状态数据 */
-	private ArrayList<Relay> shortList = new ArrayList<Relay>();
+    /**
+     * 短路1-120继电器状态数据
+     */
+    private ArrayList<Relay> shortList = new ArrayList<Relay>();
 
-	/** 虚接1-120继电器状态数据 */
-	private ArrayList<Relay> falseList = new ArrayList<Relay>();
+    /**
+     * 虚接1-120继电器状态数据
+     */
+    private ArrayList<Relay> falseList = new ArrayList<Relay>();
 
-	/** 断路1-120继电器状态数据 */
-	private ArrayList<Relay> breakfaultList = new ArrayList<Relay>();
+    /**
+     * 断路1-120继电器状态数据
+     */
+    private ArrayList<Relay> breakfaultList = new ArrayList<Relay>();
 
-	/** 1-120继电器操作监听 */
-	private Handler theFailurePointSetGVHandler = null;
-	/** 基本功能操作监听 */
-	private Handler faultboardOptionHandler = null;
+    /**
+     * 1-120继电器操作监听
+     */
+    private Handler theFailurePointSetGVHandler = null;
+    /**
+     * 基本功能操作监听
+     */
+    private Handler faultboardOptionHandler = null;
 
-	private TheFailurePointSetAdapter theFailurePointSetAdapter = null;
-	/** 基本操作功能类 */
-	private FaultboardOption faultboardOption = null;
+    private TheFailurePointSetAdapter theFailurePointSetAdapter = null;
+    /**
+     * 基本操作功能类
+     */
+    private FaultboardOption faultboardOption = null;
 
-	private Button ignitionButton = null;
-	private Button startButton = null;
-	private Button shutDownButton = null;
-	private boolean hasStarted = false;
+    private Button ignitionButton = null;
+    private Button startButton = null;
+    private Button shutDownButton = null;
+    private boolean hasStarted = false;
 
-	private TabHost tabHost = null;
-	private TabWidget tabWidget = null;
+    private TabHost tabHost = null;
+    private TabWidget tabWidget = null;
 
-	private GridView theFailurePointSetGV = null;
+    private GridView theFailurePointSetGV = null;
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -81,63 +93,79 @@ public class MainActivity extends BaseActivity implements OnClickListener,
         setContentView(R.layout.activity_main);
         initSDcard();
         initHandler();
-        initData();
+        initData(0);
         initView();
 
 
     }
 
-	/**
-	 * 初始化继电器状态数据
-	 */
-	private void initData() {
+    private int getCurentTab() {
+        return tabHost.getCurrentTab();
+    }
 
-        shortList.clear();
-        breakfaultList.clear();
-        falseList.clear();
-        for (int i = 0; i < 6; i++) {
-            shortList.add(new Relay(i + 1, i + 1, Relay.Green));
+    /**
+     * 初始化继电器状态数据
+     */
+    private void initData(int pos) {
+
+        if (shortList.isEmpty()) {
+            for (int i = 0; i < 6; i++) {
+                shortList.add(new Relay(i + 1, i + 1, Relay.Green));
+            }
+
+            for (int i = 0; i < 120; i++) {
+                breakfaultList.add(new Relay(i + 1, i + 1, Relay.Green));
+            }
+
+            for (int i = 0; i < 20; i++) {
+                falseList.add(new Relay(i + 1, i + 1, Relay.Green));
+            }
+        }
+        switch (pos) {
+            case 0:
+                faultboardOption = new FaultboardOption(this, faultboardOptionHandler,
+                        breakfaultList);
+                break;
+            case 1:
+                faultboardOption = new FaultboardOption(this, faultboardOptionHandler,
+                        falseList);
+                break;
+            case 2:
+                faultboardOption = new FaultboardOption(this, faultboardOptionHandler,
+                        shortList);
+                break;
         }
 
-        for (int i = 0; i < 120; i++) {
-            breakfaultList.add(new Relay(i + 1, i + 1, Relay.Green));
-        }
 
-        for (int i = 0; i < 20; i++) {
-            falseList.add(new Relay(i + 1, i + 1, Relay.Green));
-        }
+    }
 
-		faultboardOption = new FaultboardOption(this, faultboardOptionHandler,
-				shortList);
-	}
+    private void initHandler() {
+        theFailurePointSetGVHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Relay relay = (Relay) msg.obj;
+                int state = relay.getState();
+                relay.setState(Relay.Yellow);
+                if (state == Relay.Red) {
+                    faultboardOption.shutDown((byte) relay.getId(), msg.arg1);
+                } else if (state == Relay.Green) {
+                    int id = relay.getId();
+                    faultboardOption.start((byte) id, msg.arg1);
+                } else if (state == Relay.Yellow) {
+                    Toast.makeText(MainActivity.this, "Command had send !",
+                            Toast.LENGTH_SHORT).show();
+                }
+                theFailurePointSetAdapter.notifyDataSetChanged();
+            }
+        };
 
-	private void initHandler() {
-		theFailurePointSetGVHandler = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				Relay relay = (Relay) msg.obj;
-				int state = relay.getState();
-					relay.setState(Relay.Yellow);
-				if (state == Relay.Red) {
-					faultboardOption.shutDown((byte) relay.getId(), msg.arg1);
-				} else if (state == Relay.Green) {
-					int id = relay.getId();
-					faultboardOption.start((byte) id, msg.arg1);
-				} else if (state == Relay.Yellow) {
-					Toast.makeText(MainActivity.this, "Command had send !",
-							Toast.LENGTH_SHORT).show();
-				}
-				theFailurePointSetAdapter.notifyDataSetChanged();
-			}
-		};
-
-		faultboardOptionHandler = new Handler() {
-			@Override
-			public void handleMessage(Message msg) {
-				theFailurePointSetAdapter.notifyDataSetChanged();
-			}
-		};
-	}
+        faultboardOptionHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                theFailurePointSetAdapter.notifyDataSetChanged();
+            }
+        };
+    }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void initSDcard() {
@@ -271,10 +299,10 @@ public class MainActivity extends BaseActivity implements OnClickListener,
         return list;
     }
 
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -286,7 +314,7 @@ public class MainActivity extends BaseActivity implements OnClickListener,
                 break;
             case R.id.action_close:
                 this.faultboardOption.closeBluetoothSocket();
-                initData();
+                initData(getCurentTab());
                 break;
             case R.id.action_edit_title:
                 editTitle();
@@ -323,150 +351,149 @@ public class MainActivity extends BaseActivity implements OnClickListener,
         super.finish();
     }
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			Toast.makeText(this, getString(R.string.Button_Back_BeCanceled),
-					Toast.LENGTH_SHORT).show();
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            Toast.makeText(this, getString(R.string.Button_Back_BeCanceled),
+                    Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		switch (v.getId()) {
-		case R.id.Button_Start:// 启动
-			if (hasStarted) {
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					Toast.makeText(this, "StartDown", Toast.LENGTH_SHORT).show();
-					faultboardOption.startDown((byte) 0x66, R.id.Button_Start);
-				} else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-					Toast.makeText(this, "StartUp", Toast.LENGTH_SHORT).show();
-					faultboardOption.startUp((byte) 0x66, R.id.Button_Start);
-				}
-			} else {
-				Toast.makeText(this, "The machine had not be started !",
-						Toast.LENGTH_SHORT).show();
-			}
-			break;
-		}
-		return true;
-	}
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (v.getId()) {
+            case R.id.Button_Start:// 启动
+                if (hasStarted) {
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        Toast.makeText(this, "StartDown", Toast.LENGTH_SHORT).show();
+                        faultboardOption.startDown((byte) 0x66, R.id.Button_Start);
+                    } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        Toast.makeText(this, "StartUp", Toast.LENGTH_SHORT).show();
+                        faultboardOption.startUp((byte) 0x66, R.id.Button_Start);
+                    }
+                } else {
+                    Toast.makeText(this, "The machine had not be started !",
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+        return true;
+    }
 
-	public void onScroll(AbsListView view, int firstVisibleItem,
-			int visibleItemCount, int totalItemCount) {
-	}
+    public void onScroll(AbsListView view, int firstVisibleItem,
+                         int visibleItemCount, int totalItemCount) {
+    }
 
-	private void createTabHost() {
-		{
-			tabHost = (TabHost) findViewById(R.id.tabhost);
-			tabWidget = (TabWidget) findViewById(android.R.id.tabs);
-			tabHost.setup();
-			tabHost.bringToFront();
+    private void createTabHost() {
+        {
+            tabHost = (TabHost) findViewById(R.id.tabhost);
+            tabWidget = (TabWidget) findViewById(android.R.id.tabs);
+            tabHost.setup();
+            tabHost.bringToFront();
 
-			ArrayList<TabHost.TabSpec> hostlist = new ArrayList<TabHost.TabSpec>(
-					2);
+            ArrayList<TabHost.TabSpec> hostlist = new ArrayList<TabHost.TabSpec>(
+                    2);
 
-			TabHost.TabSpec tabspec1 = tabHost.newTabSpec("0");
-			tabspec1.setContent(R.id.GridView_TheFailurePointSet);
-			TextView indicatorV = new TextView(this);
-			indicatorV.setGravity(Gravity.CENTER);
-			indicatorV.setBackgroundResource(R.drawable.channelsbg);
-			indicatorV.setTextSize(16);
-			indicatorV.setText(R.string.breakfault);
-			tabspec1.setIndicator(indicatorV);
-			hostlist.add(tabspec1);
-
-
-
-			tabspec1 = tabHost.newTabSpec("2");
-			tabspec1.setContent(R.id.GridView_TheFailurePointSet);
-			indicatorV = new TextView(this);
-			indicatorV.setGravity(Gravity.CENTER);
-			indicatorV.setBackgroundResource(R.drawable.channelsbg);
-			indicatorV.setTextSize(16);
-			indicatorV.setText(R.string.falsefault);
-			tabspec1.setIndicator(indicatorV);
-			hostlist.add(tabspec1);
-
-			tabspec1 = tabHost.newTabSpec("1");
-			tabspec1.setContent(R.id.GridView_TheFailurePointSet);
-			indicatorV = new TextView(this);
-			indicatorV.setGravity(Gravity.CENTER);
-			indicatorV.setBackgroundResource(R.drawable.channelsbg);
-			indicatorV.setTextSize(16);
-			indicatorV.setText(R.string.shortfault);
-			tabspec1.setIndicator(indicatorV);
-			hostlist.add(tabspec1);
+            TabHost.TabSpec tabspec1 = tabHost.newTabSpec("0");
+            tabspec1.setContent(R.id.GridView_TheFailurePointSet);
+            TextView indicatorV = new TextView(this);
+            indicatorV.setGravity(Gravity.CENTER);
+            indicatorV.setBackgroundResource(R.drawable.channelsbg);
+            indicatorV.setTextSize(16);
+            indicatorV.setText(R.string.breakfault);
+            tabspec1.setIndicator(indicatorV);
+            hostlist.add(tabspec1);
 
 
-			int j = hostlist.size();
-			for (int i = 0; i < j; i++) {
-				tabHost.addTab(hostlist.get(i));
-			}
+            tabspec1 = tabHost.newTabSpec("2");
+            tabspec1.setContent(R.id.GridView_TheFailurePointSet);
+            indicatorV = new TextView(this);
+            indicatorV.setGravity(Gravity.CENTER);
+            indicatorV.setBackgroundResource(R.drawable.channelsbg);
+            indicatorV.setTextSize(16);
+            indicatorV.setText(R.string.falsefault);
+            tabspec1.setIndicator(indicatorV);
+            hostlist.add(tabspec1);
 
-			tabHost.setCurrentTab(0);
-			View view = tabWidget.getChildAt(0);
-			view.setBackgroundDrawable(getResources().getDrawable(
-					R.drawable.presschannelbg));
+            tabspec1 = tabHost.newTabSpec("1");
+            tabspec1.setContent(R.id.GridView_TheFailurePointSet);
+            indicatorV = new TextView(this);
+            indicatorV.setGravity(Gravity.CENTER);
+            indicatorV.setBackgroundResource(R.drawable.channelsbg);
+            indicatorV.setTextSize(16);
+            indicatorV.setText(R.string.shortfault);
+            tabspec1.setIndicator(indicatorV);
+            hostlist.add(tabspec1);
 
-			theFailurePointSetAdapter = new TheFailurePointSetAdapter(this,
-					shortList, theFailurePointSetGVHandler);
 
-			theFailurePointSetGV = (GridView) findViewById(R.id.GridView_TheFailurePointSet);
-			theFailurePointSetGV.setAdapter(theFailurePointSetAdapter);
-			theFailurePointSetGV.setOnScrollListener(this);
-			theFailurePointSetGV.setVisibility(View.VISIBLE);
-			theFailurePointSetGV.setNumColumns(6);
+            int j = hostlist.size();
+            for (int i = 0; i < j; i++) {
+                tabHost.addTab(hostlist.get(i));
+            }
 
-			tabHost.setOnTabChangedListener(new OnTabChangeListener() {
-				public void onTabChanged(String tabId) {
+            tabHost.setCurrentTab(0);
+            View view = tabWidget.getChildAt(0);
+            view.setBackgroundDrawable(getResources().getDrawable(
+                    R.drawable.presschannelbg));
 
-					changeListData(tabId);
-					for (int i = 0; i < tabWidget.getChildCount(); i++) {
-						View view = tabWidget.getChildAt(i);
-						if (tabHost.getCurrentTab() == i) {
-							view.setBackgroundDrawable(getResources()
-									.getDrawable(R.drawable.presschannelbg));
-						} else {
-							view.setBackgroundDrawable(getResources()
-									.getDrawable(R.drawable.channelsbg));
-						}
-					}
-				}
-			});
+            theFailurePointSetAdapter = new TheFailurePointSetAdapter(this,
+                    shortList, theFailurePointSetGVHandler);
 
-			changeListData("0");
-		}
+            theFailurePointSetGV = (GridView) findViewById(R.id.GridView_TheFailurePointSet);
+            theFailurePointSetGV.setAdapter(theFailurePointSetAdapter);
+            theFailurePointSetGV.setOnScrollListener(this);
+            theFailurePointSetGV.setVisibility(View.VISIBLE);
+            theFailurePointSetGV.setNumColumns(6);
 
-	}
+            tabHost.setOnTabChangedListener(new OnTabChangeListener() {
+                public void onTabChanged(String tabId) {
 
-	private void changeListData(String tabId) {
-		// 短路故障
-		if (tabId.equals("1")) {
-			TableState = ShortTable;
-			theFailurePointSetAdapter = new TheFailurePointSetAdapter(this,
-					shortList, theFailurePointSetGVHandler);
-			theFailurePointSetGV.setAdapter(theFailurePointSetAdapter);
-			faultboardOption.setArray(shortList);
-		} else if (tabId.equals("2")) { // 虚接故障
-			TableState = FalseTable;
-			theFailurePointSetAdapter = new TheFailurePointSetAdapter(this,
-					falseList, theFailurePointSetGVHandler);
-			theFailurePointSetGV.setAdapter(theFailurePointSetAdapter);
-			faultboardOption.setArray(falseList);
-		} else {// 断路故障
-			TableState = BreakTable;
-			theFailurePointSetAdapter = new TheFailurePointSetAdapter(this,
-					breakfaultList, theFailurePointSetGVHandler);
-			theFailurePointSetGV.setAdapter(theFailurePointSetAdapter);
-			faultboardOption.setArray(breakfaultList);
-		}
-	}
+                    changeListData(tabId);
+                    for (int i = 0; i < tabWidget.getChildCount(); i++) {
+                        View view = tabWidget.getChildAt(i);
+                        if (tabHost.getCurrentTab() == i) {
+                            view.setBackgroundDrawable(getResources()
+                                    .getDrawable(R.drawable.presschannelbg));
+                        } else {
+                            view.setBackgroundDrawable(getResources()
+                                    .getDrawable(R.drawable.channelsbg));
+                        }
+                    }
+                }
+            });
 
-	@Override
-	public void onScrollStateChanged(AbsListView view, int scrollState) {
+            changeListData("0");
+        }
 
-	}
+    }
+
+    private void changeListData(String tabId) {
+        // 短路故障
+        if (tabId.equals("1")) {
+            TableState = ShortTable;
+            theFailurePointSetAdapter = new TheFailurePointSetAdapter(this,
+                    shortList, theFailurePointSetGVHandler);
+            theFailurePointSetGV.setAdapter(theFailurePointSetAdapter);
+            faultboardOption.setArray(shortList);
+        } else if (tabId.equals("2")) { // 虚接故障
+            TableState = FalseTable;
+            theFailurePointSetAdapter = new TheFailurePointSetAdapter(this,
+                    falseList, theFailurePointSetGVHandler);
+            theFailurePointSetGV.setAdapter(theFailurePointSetAdapter);
+            faultboardOption.setArray(falseList);
+        } else {// 断路故障
+            TableState = BreakTable;
+            theFailurePointSetAdapter = new TheFailurePointSetAdapter(this,
+                    breakfaultList, theFailurePointSetGVHandler);
+            theFailurePointSetGV.setAdapter(theFailurePointSetAdapter);
+            faultboardOption.setArray(breakfaultList);
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
 }
