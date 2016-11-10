@@ -105,23 +105,24 @@ public class MainActivity extends BaseActivity implements OnClickListener,
      */
     private void initData() {
 
-        shortList.clear();
-        breakfaultList.clear();
-        falseList.clear();
-        for (int i = 0; i < 6; i++) {
-            shortList.add(new Relay(i + 1, i + 1, Relay.Green));
-        }
+//        shortList.clear();
+//        breakfaultList.clear();
+//        falseList.clear();
+        if(falseList.isEmpty()){
+            for (int i = 0; i < 6; i++) {
+                shortList.add(new Relay(i + 1, i + 1, Relay.Green));
+            }
 
-        for (int i = 0; i < 120; i++) {
-            breakfaultList.add(new Relay(i + 1, i + 1, Relay.Green));
-        }
+            for (int i = 0; i < 120; i++) {
+                breakfaultList.add(new Relay(i + 1, i + 1, Relay.Green));
+            }
 
-        for (int i = 0; i < 20; i++) {
-            falseList.add(new Relay(i + 1, i + 1, Relay.Green));
+            for (int i = 0; i < 20; i++) {
+                falseList.add(new Relay(i + 1, i + 1, Relay.Green));
+            }
         }
-
         faultboardOption = new FaultboardOption(this, faultboardOptionHandler,
-                shortList);
+                breakfaultList);
     }
 
     private void initHandler() {
@@ -299,6 +300,8 @@ public class MainActivity extends BaseActivity implements OnClickListener,
                 break;
             case R.id.action_close:
                 this.faultboardOption.closeBluetoothSocket();
+                Toast.makeText(MainActivity.this, "连接已断开",
+                        Toast.LENGTH_SHORT).show();
                 initData();
                 break;
             case R.id.action_edit_title:
