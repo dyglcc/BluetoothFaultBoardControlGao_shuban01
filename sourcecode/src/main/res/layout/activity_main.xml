@@ -1,0 +1,206 @@
+<com.xiaobailong.widget.ListScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/listscroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:autofit="http://schemas.android.com/apk/res-auto"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <me.grantland.widget.AutofitTextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:singleLine="true"
+            android:textColor="@color/theme_blue"
+            android:textSize="50dp"
+            android:visibility="gone"
+            autofit:minTextSize="6sp" />
+
+
+        <LinearLayout
+            android:id="@+id/LL_OnOffContainer"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:layout_below="@+id/tv_name"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/Button_Ignition"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_weight="2"
+                android:background="@drawable/red"
+                android:text="@string/Button_Ignition" />
+            <!--
+                android:layout_marginRight="50dp"
+                android:layout_marginLeft="25dp"
+            -->
+
+            <Button
+                android:id="@+id/Button_Start"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_weight="2"
+                android:background="@drawable/red"
+                android:text="@string/Button_Start" />
+            <!-- android:layout_marginRight="50dp" -->
+
+            <Button
+                android:id="@+id/Button_ShutDown"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_weight="2"
+                android:background="@drawable/green"
+                android:text="@string/Button_ShutDown" />
+            <!-- android:layout_marginRight="25dp" -->
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LL_midlleContainer"
+            android:layout_width="fill_parent"
+            android:layout_height="0px"
+            android:layout_below="@id/LL_OnOffContainer"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TabHost
+                android:id="@+id/tabhost"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="40dp">
+
+                    <GridView
+                        android:id="@+id/GridView_TheFailurePointSet"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:horizontalSpacing="10dp"
+                        android:scrollbars="none"
+                        android:stretchMode="columnWidth"
+                        android:verticalSpacing="10dp" />
+                </FrameLayout>
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp" />
+            </TabHost>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/line01"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:layout_below="@id/LL_midlleContainer"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/Button_PointOfFailureThat"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:background="@drawable/yellow"
+                android:text="@string/Button_PointOfFailureThat"
+                android:textSize="13sp" />
+            <!-- android:layout_marginLeft="25dp"
+                android:layout_marginRight="50dp" -->
+
+            <Button
+                android:id="@+id/Button_StateIsRead"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:background="@drawable/yellow"
+                android:text="@string/Button_StateIsRead"
+                android:textSize="15sp" />
+            <!-- android:layout_marginRight="50dp" -->
+
+            <Button
+                android:id="@+id/Button_SetAll"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:background="@drawable/yellow"
+                android:text="@string/Button_SetAll"
+                android:textSize="15sp" />
+            <!-- android:layout_marginRight="50dp" -->
+
+            <Button
+                android:id="@+id/Button_ClearAll"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:background="@drawable/yellow"
+                android:text="@string/Button_ClearAll"
+                android:textSize="15sp" />
+            <!-- android:layout_marginRight="50dp" -->
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:layout_below="@+id/line01"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/Button_Mode_Teach02"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:background="@drawable/yellow"
+                android:text="@string/Button_Mode_Teach"
+                android:textSize="13sp" />
+            <!-- android:layout_marginLeft="25dp"
+                android:layout_marginRight="50dp" -->
+
+            <Button
+                android:id="@+id/Button_an02"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:background="@drawable/yellow"
+                android:text="@string/Button_StateIsRead"
+                android:textSize="15sp"
+                android:visibility="invisible" />
+            <!-- android:layout_marginRight="50dp" -->
+
+            <Button
+                android:id="@+id/Button_an03"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:background="@drawable/yellow"
+                android:text="@string/Button_SetAll"
+                android:textSize="15sp"
+                android:visibility="invisible" />
+            <!-- android:layout_marginRight="50dp" -->
+
+            <Button
+                android:id="@+id/Button_an04"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:background="@drawable/yellow"
+                android:text="@string/Button_ClearAll"
+                android:textSize="15sp"
+                android:visibility="invisible" />
+            <!-- android:layout_marginRight="50dp" -->
+        </LinearLayout>
+
+    </LinearLayout>
+</com.xiaobailong.widget.ListScrollView>

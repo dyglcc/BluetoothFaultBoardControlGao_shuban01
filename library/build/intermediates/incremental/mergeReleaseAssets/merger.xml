@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/Users/dongyuangui/GITHUB/BluetoothFaultBoardControlGao_shuban01/library/src/main/assets"/><source path="/Users/dongyuangui/GITHUB/BluetoothFaultBoardControlGao_shuban01/library/build/generated/assets/shaders/release"/></dataSet><dataSet config="release"><source path="/Users/dongyuangui/GITHUB/BluetoothFaultBoardControlGao_shuban01/library/src/release/assets"/></dataSet></merger>
