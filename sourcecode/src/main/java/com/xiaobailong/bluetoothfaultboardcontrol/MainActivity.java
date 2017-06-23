@@ -524,7 +524,7 @@ public class MainActivity extends BaseActivity implements OnClickListener,
             theFailurePointSetGV.setAdapter(theFailurePointSetAdapter);
             theFailurePointSetGV.setOnScrollListener(this);
             theFailurePointSetGV.setVisibility(View.VISIBLE);
-            theFailurePointSetGV.setNumColumns(6);
+            theFailurePointSetGV.setNumColumns(3);
 
             tabHost.setOnTabChangedListener(new OnTabChangeListener() {
                 public void onTabChanged(String tabId) {

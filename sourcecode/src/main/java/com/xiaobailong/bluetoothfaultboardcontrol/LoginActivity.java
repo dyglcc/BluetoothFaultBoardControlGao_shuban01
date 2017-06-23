@@ -1,5 +1,22 @@
 package com.xiaobailong.bluetoothfaultboardcontrol;
 
+import android.Manifest;
+import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,26 +26,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.URI;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 
 public class LoginActivity extends BaseActivity {
 
@@ -55,6 +52,11 @@ public class LoginActivity extends BaseActivity {
 		// this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		// this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+		if (Build.VERSION.SDK_INT >= 23) {
+			String[] mPermissionList = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+			ActivityCompat.requestPermissions(this, mPermissionList, 123);
+		}
 		initLoginView();
 	}
 
