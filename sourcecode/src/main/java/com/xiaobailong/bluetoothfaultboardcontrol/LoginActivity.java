@@ -53,10 +53,10 @@ public class LoginActivity extends BaseActivity {
 		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		// this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		if (Build.VERSION.SDK_INT >= 23) {
-			String[] mPermissionList = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-			ActivityCompat.requestPermissions(this, mPermissionList, 123);
-		}
+//		if (Build.VERSION.SDK_INT >= 23) {
+//			String[] mPermissionList = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+//			ActivityCompat.requestPermissions(this, mPermissionList, 123);
+//		}
 		initLoginView();
 	}
 

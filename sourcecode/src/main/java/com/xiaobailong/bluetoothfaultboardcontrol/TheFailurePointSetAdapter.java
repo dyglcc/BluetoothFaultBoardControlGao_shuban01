@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -66,7 +67,8 @@ public class TheFailurePointSetAdapter extends BaseAdapter implements
         button.setTag(relay);
         button.setId(relay.getId());
         button.setOnClickListener(this);
-        button.setTextSize(10);
+        // 原来是10
+        button.setTextSize(TypedValue.COMPLEX_UNIT_PX,context.getResources().getDimension(R.dimen.grid_text_size));
         // button.setWidth(40/2*3);
         // button.setHeight(40/2*3);
 

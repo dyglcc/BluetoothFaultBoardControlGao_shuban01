@@ -203,9 +203,11 @@ public class MainActivity extends BaseActivity implements OnClickListener,
                 return str;
             }
         } catch (FileNotFoundException e) {
-            Toast.makeText(context, "读取文件出错！", Toast.LENGTH_LONG).show();
+            String msg = e == null ? "" : e.getMessage();
+            Toast.makeText(context, "读取文件出错！" + msg, Toast.LENGTH_LONG).show();
         } catch (IOException e) {
-            Toast.makeText(context, "读取文件出错！", Toast.LENGTH_LONG).show();
+            String msg = e == null ? "" : e.getMessage();
+            Toast.makeText(context, "读取文件出错！" + msg, Toast.LENGTH_LONG).show();
         }
 //                todo 创建修改标题的文件，读取文件，修改文件更新标题。
         return str;

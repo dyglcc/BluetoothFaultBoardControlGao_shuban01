@@ -9,17 +9,18 @@
     <dimen name="layx60">60.0px</dimen>
     <dimen name="layx100">100.0px</dimen>
     <dimen name="layx18">18.0px</dimen>
-     <dimen name="layx31">31.0px</dimen>
-      <dimen name="layy40">40.0px</dimen>
-      <dimen name="layy33">33.0px</dimen>
-       <dimen name="layx210">210.0px</dimen>
-         <dimen name="layx40">40.0px</dimen>
-         <dimen name="layy53">53.0px</dimen>
-         <dimen name="layx250">250.0px</dimen>
-           <dimen name="layx47">47.0px</dimen>
-            <dimen name="layy13">13.0px</dimen>
-             <dimen name="layx75">75.0px</dimen>
-                 <dimen name="layx44">44.0px</dimen>
-                    <dimen name="layx38">38.0px</dimen>
+    <dimen name="layx31">31.0px</dimen>
+    <dimen name="layy40">40.0px</dimen>
+    <dimen name="layy33">33.0px</dimen>
+    <dimen name="layx210">210.0px</dimen>
+    <dimen name="layx40">40.0px</dimen>
+    <dimen name="layy53">53.0px</dimen>
+    <dimen name="layx250">250.0px</dimen>
+    <dimen name="layx47">47.0px</dimen>
+    <dimen name="layy13">13.0px</dimen>
+    <dimen name="layx75">75.0px</dimen>
+    <dimen name="layx44">44.0px</dimen>
+    <dimen name="layx38">38.0px</dimen>
+    <dimen name="grid_text_size">16dp</dimen>
 
 </resources>
