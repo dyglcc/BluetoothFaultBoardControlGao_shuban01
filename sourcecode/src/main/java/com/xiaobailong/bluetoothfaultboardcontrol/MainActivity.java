@@ -220,10 +220,23 @@ public class MainActivity extends BaseActivity implements OnClickListener,
             String[] names = name.split("\\.");
             if (names.length > 0) {
                 tvFileName.setText(names[0]);
+                // 修复bug:设置之后textview的高度不会减小
+                afterSet(names[0]);
             }
         } else {
             tvFileName.setVisibility(View.GONE);
         }
+
+    }
+
+    private void afterSet(final String str) {
+        tvFileName.setText(str + ".");
+        new Handler(getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tvFileName.setText(str);
+            }
+        }, 200);
     }
 
     public void setValues(List<FaultBean> datas) {
@@ -399,6 +412,9 @@ public class MainActivity extends BaseActivity implements OnClickListener,
                 break;
             case R.id.action_edit_title:
                 editTitle();
+                break;
+            case R.id.action_set_pass:
+                startActivity(new Intent(MainActivity.this, PasswordSettingActivity.class));
                 break;
             default:
                 break;

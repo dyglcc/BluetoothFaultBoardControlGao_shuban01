@@ -21,6 +21,6 @@
     <dimen name="layx75">75.0px</dimen>
     <dimen name="layx44">44.0px</dimen>
     <dimen name="layx38">38.0px</dimen>
-    <dimen name="grid_text_size">16dp</dimen>
+    <dimen name="grid_text_size">14sp</dimen>
 
 </resources>

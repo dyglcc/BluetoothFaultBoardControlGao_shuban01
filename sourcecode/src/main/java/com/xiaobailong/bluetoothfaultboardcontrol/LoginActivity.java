@@ -1,13 +1,11 @@
 package com.xiaobailong.bluetoothfaultboardcontrol;
 
-import android.Manifest;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,6 +14,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.xiaobailong.tools.SpDataUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -182,11 +182,18 @@ public class LoginActivity extends BaseActivity {
 														// 1);// 显示对话框
 			Toast.makeText(this, "用户名或密码不能为空", Toast.LENGTH_SHORT).show();
 		} else {// 用户名密码不为空
-			if (password.equals("000000")) {
+			boolean superMan = password.equals("000000");
+			boolean rightPass = false;
+			String pass = SpDataUtils.getUserPwd();
+			if (!TextUtils.isEmpty(pass) && pass.equals(password)) {
+				rightPass = true;
+			}
+			if (superMan || rightPass) {
 				startMain();
 			} else {
 				Toast.makeText(this, "用户名或密码不正确", Toast.LENGTH_SHORT).show();
 			}
+
 		}
 	}
 
