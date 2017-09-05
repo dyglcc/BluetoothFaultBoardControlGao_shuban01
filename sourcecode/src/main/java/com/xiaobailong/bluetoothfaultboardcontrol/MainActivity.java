@@ -31,6 +31,7 @@ import com.xiaobailong.bluetooth.MediaFileListDialog;
 import com.xiaobailong.bluetooth.MediaFileListDialogMainpage;
 import com.xiaobailong.titile.WriteTitleActivity;
 import com.xiaobailong.tools.ConstValue;
+import com.xiaobailong.tools.NetWorkUtils;
 import com.xiaobailong.widget.ListScrollView;
 
 import java.io.BufferedReader;
@@ -399,7 +400,12 @@ public class MainActivity extends BaseActivity implements OnClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                this.faultboardOption.bluetoothConnect();
+                boolean connetNetwork = NetWorkUtils.checkEnable(getApplication());
+                if (connetNetwork) {
+                    MainActivity.this.faultboardOption.bluetoothConnect();
+                } else {
+                    Toast.makeText(this, "请连接wifi热点", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.action_exit:
                 finish();
@@ -591,6 +597,6 @@ public class MainActivity extends BaseActivity implements OnClickListener,
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-
     }
+
 }
