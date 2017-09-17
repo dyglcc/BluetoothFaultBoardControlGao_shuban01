@@ -20,6 +20,7 @@ public class SpDataUtils {
     private static final String U_ID = "uid";
     private static final String TOKEN = "token";
     private static final String AVATAR = "avatar";
+    private static final String WIFI_SSID = "wifi_ssid";
     private static final String CURRENT_TEAM_JSON = "current_team";
     private static final String CURRENT_TEAM_PROJECT = "CURRENT_TEAM_PROJECT";
     private static final String USERICON = "usericon";
@@ -96,6 +97,13 @@ public class SpDataUtils {
 
     public static String getAvatar() {
         return sp.getString(AVATAR, "");
+    }
+    public static void saveWIFI_SSID(String ssid) {
+        sp.saveString(WIFI_SSID, ssid);
+    }
+
+    public static String getWIFI_SSID() {
+        return sp.getString(WIFI_SSID, "");
     }
 
     public static String getCurrentTeam() {

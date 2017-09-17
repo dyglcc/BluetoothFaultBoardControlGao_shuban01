@@ -4,10 +4,12 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -29,10 +31,17 @@ import android.widget.Toast;
 import com.xiaobailong.bluetooth.FaultBean;
 import com.xiaobailong.bluetooth.MediaFileListDialog;
 import com.xiaobailong.bluetooth.MediaFileListDialogMainpage;
+import com.xiaobailong.event.Msgtype;
 import com.xiaobailong.titile.WriteTitleActivity;
 import com.xiaobailong.tools.ConstValue;
 import com.xiaobailong.tools.NetWorkUtils;
+import com.xiaobailong.tools.SpDataUtils;
 import com.xiaobailong.widget.ListScrollView;
+import com.xiaobailong.wifi.WifiHelper;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -105,6 +114,28 @@ public class MainActivity extends BaseActivity implements OnClickListener,
         initData(0);
         initView();
 
+        WifiManager manager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        String SSID = SpDataUtils.getWIFI_SSID();
+        boolean wifiEnabled = manager.isWifiEnabled();
+        boolean b = NetWorkUtils.checkEnable(this.getApplication());
+        if (wifiEnabled && b) {
+            connectNetwork();
+        }
+//        if (wifiEnabled) {
+//            if (TextUtils.isEmpty(SSID)) { // 以前未成功保存过ssid
+//            } else { // 以前连接过ssid 尝试自动连接 热点
+//                // 简称当前热点是否是以前连接的热点
+//                WifiInfo connectionInfo = manager.getConnectionInfo();
+//                String currentSsid = connectionInfo.getSSID();
+//                if (!currentSsid.equals(SSID)) { // 如果当前热点不是以前连接的，强制连接热点
+//                    WifiHelper wifiHelper = new WifiHelper();
+//                    WifiConfiguration wifiConfig = wifiHelper.createWifiConfig(SSID, manager);
+//                    // 连接热点
+//                    wifiHelper.connnectWifi(manager, wifiConfig);
+//                    connectNetwork();
+//                }
+//            }
+//        }
 
     }
 
@@ -146,6 +177,29 @@ public class MainActivity extends BaseActivity implements OnClickListener,
         }
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(Msgtype msgtype) {
+        if (msgtype.isConnect()) {
+            connectNetwork();
+        } else {
+            if (faultboardOption != null) {
+                faultboardOption.closeBluetoothSocket();
+            }
+        }
     }
 
     private void initHandler() {
@@ -397,23 +451,33 @@ public class MainActivity extends BaseActivity implements OnClickListener,
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.getItem(0);
+        String ssid = NetWorkUtils.getCurrentWifiSSID(this.getApplicationContext());
+        String title = getString(R.string.action_connect);
+        if (!TextUtils.isEmpty(ssid)) {
+            item.setTitle(title + "(当前热点：" + ssid.replace("\"", "") + ")");
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                boolean connetNetwork = NetWorkUtils.checkEnable(getApplication());
-                if (connetNetwork) {
-                    MainActivity.this.faultboardOption.bluetoothConnect();
-                } else {
-                    Toast.makeText(this, "请连接wifi热点", Toast.LENGTH_SHORT).show();
+                WifiManager manager = (WifiManager) MainActivity.this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                boolean wifiEnabled = manager.isWifiEnabled();
+                if (!wifiEnabled) {
+                    Toast.makeText(this, "未打开wifi设备,请开启wifi", Toast.LENGTH_SHORT).show();
+                    return true;
                 }
+                new WifiHelper().showWifiList(MainActivity.this);
                 break;
             case R.id.action_exit:
                 finish();
                 break;
             case R.id.action_close:
-                this.faultboardOption.closeBluetoothSocket();
-                Toast.makeText(MainActivity.this, "连接已断开",
-                        Toast.LENGTH_SHORT).show();
+                closeSocket();
                 initData(getCurentTab());
                 break;
             case R.id.action_edit_title:
@@ -427,6 +491,25 @@ public class MainActivity extends BaseActivity implements OnClickListener,
         }
         return true;
     }
+
+    private void closeSocket() {
+        this.faultboardOption.closeBluetoothSocket();
+        Toast.makeText(MainActivity.this, "连接已断开",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        closeSocket();
+        super.onDestroy();
+    }
+
+    public void connectNetwork() {
+        if (!MainActivity.this.faultboardOption.isConnect()) {
+            MainActivity.this.faultboardOption.bluetoothConnect();
+        }
+    }
+
 
     private void editTitle() {
         startActivityForResult(new Intent(MainActivity.this, WriteTitleActivity.class), 100);

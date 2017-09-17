@@ -247,6 +247,7 @@ public class BluetoothManager {
             if (bluetoothSocket != null) {
                 bluetoothSocket.close();
             }
+            bluetoothCononected = false;
         } catch (IOException e) {
             e.printStackTrace();
         }

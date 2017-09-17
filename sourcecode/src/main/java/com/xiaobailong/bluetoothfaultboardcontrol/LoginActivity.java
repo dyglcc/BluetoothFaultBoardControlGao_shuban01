@@ -57,6 +57,7 @@ public class LoginActivity extends BaseActivity {
 //			String[] mPermissionList = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 //			ActivityCompat.requestPermissions(this, mPermissionList, 123);
 //		}
+
 		initLoginView();
 	}
 

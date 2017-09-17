@@ -19,7 +19,7 @@ public class NetWorkUtils {
      * @return
      */
     public static boolean checkEnable(Context paramContext) {
-        boolean i = false;
+
         NetworkInfo localNetworkInfo = ((ConnectivityManager) paramContext
                 .getSystemService("connectivity")).getActiveNetworkInfo();
         if ((localNetworkInfo != null) && (localNetworkInfo.isAvailable()))
@@ -94,7 +94,7 @@ public class NetWorkUtils {
             WifiManager wifiManager = (WifiManager) context
                     .getSystemService(Context.WIFI_SERVICE);
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-            return wifiInfo.getBSSID();
+            return wifiInfo.getSSID();
         } catch (Exception ex) {
             return " 获取IP出错鸟!!!!请保证是WIFI,或者请重新打开网络!\n" + ex.getMessage();
         }

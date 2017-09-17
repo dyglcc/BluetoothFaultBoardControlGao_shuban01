@@ -14,7 +14,7 @@
     <string name="Button_SetAll">全部设置</string>
     <string name="Button_ClearAll">全部清除</string>
     <string name="Back">返回</string>
-    <string name="action_connect">连接设备</string>
+    <string name="action_connect">热点列表</string>
     <string name="action_close">断开设备连接</string>
     <string name="action_set_title">设置标题文字</string>
     <string name="action_set_pass">设置密码</string>

@@ -214,7 +214,6 @@ public class FaultboardOption implements BluetoothListener {
         msg.arg1 = connectSuccess;
         bluetoothListenerHandler.sendMessage(msg);
     }
-
     /**
      * 解析蓝牙板反馈数据
      */
@@ -256,7 +255,7 @@ public class FaultboardOption implements BluetoothListener {
                                     + msg.arg2 + ".", Toast.LENGTH_LONG).show();
                     break;
                 case BluetoothError:
-                    Toast.makeText(context, (String) msg.obj, Toast.LENGTH_SHORT)
+                    Toast.makeText(context.getApplicationContext(), (String) msg.obj, Toast.LENGTH_SHORT)
                             .show();
                     break;
                 case connectSuccess:
@@ -268,5 +267,9 @@ public class FaultboardOption implements BluetoothListener {
 
         ;
     };
+
+    public boolean isConnect() {
+        return blueToothManager.isBluetoothCononected();
+    }
 
 }
