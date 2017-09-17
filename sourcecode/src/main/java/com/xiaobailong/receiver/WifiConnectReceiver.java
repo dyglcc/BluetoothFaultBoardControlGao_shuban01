@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.xiaobailong.event.Msgtype;
 
@@ -29,6 +30,10 @@ public class WifiConnectReceiver extends BroadcastReceiver {
                 NetworkInfo.State state = networkInfo.getState();
                 String typeName = networkInfo.getTypeName();
                 if (!"WIFI".equals(typeName)) {
+                    return;
+                }
+                String extraInfo = networkInfo.getExtraInfo();
+                if (!TextUtils.isEmpty(extraInfo) && extraInfo.equals("<unknown ssid>")) {
                     return;
                 }
                 Msgtype msgtype = null;

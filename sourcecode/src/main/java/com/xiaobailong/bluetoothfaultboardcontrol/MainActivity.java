@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -37,7 +36,6 @@ import com.xiaobailong.tools.ConstValue;
 import com.xiaobailong.tools.NetWorkUtils;
 import com.xiaobailong.tools.SpDataUtils;
 import com.xiaobailong.widget.ListScrollView;
-import com.xiaobailong.wifi.WifiHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -113,7 +111,8 @@ public class MainActivity extends BaseActivity implements OnClickListener,
         initHandler();
         initData(0);
         initView();
-
+        // event buss 注册
+        EventBus.getDefault().register(this);
         WifiManager manager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         String SSID = SpDataUtils.getWIFI_SSID();
         boolean wifiEnabled = manager.isWifiEnabled();
@@ -180,15 +179,8 @@ public class MainActivity extends BaseActivity implements OnClickListener,
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -451,35 +443,35 @@ public class MainActivity extends BaseActivity implements OnClickListener,
         return true;
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem item = menu.getItem(0);
-        String ssid = NetWorkUtils.getCurrentWifiSSID(this.getApplicationContext());
-        String title = getString(R.string.action_connect);
-        if (!TextUtils.isEmpty(ssid)) {
-            item.setTitle(title + "(当前热点：" + ssid.replace("\"", "") + ")");
-        }
-        return super.onPrepareOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        MenuItem item = menu.getItem(0);
+//        String ssid = NetWorkUtils.getCurrentWifiSSID(this.getApplicationContext());
+//        String title = getString(R.string.action_connect);
+//        if (!TextUtils.isEmpty(ssid)) {
+//            item.setTitle(title + "(当前热点：" + ssid.replace("\"", "") + ")");
+//        }
+//        return super.onPrepareOptionsMenu(menu);
+//    }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                WifiManager manager = (WifiManager) MainActivity.this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                boolean wifiEnabled = manager.isWifiEnabled();
-                if (!wifiEnabled) {
-                    Toast.makeText(this, "未打开wifi设备,请开启wifi", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                new WifiHelper().showWifiList(MainActivity.this);
-                break;
+//            case R.id.action_settings:
+//                WifiManager manager = (WifiManager) MainActivity.this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//                boolean wifiEnabled = manager.isWifiEnabled();
+//                if (!wifiEnabled) {
+//                    Toast.makeText(this, "未打开wifi设备,请开启wifi", Toast.LENGTH_SHORT).show();
+//                    return true;
+//                }
+//                new WifiHelper().showWifiList(MainActivity.this);
+//                break;
             case R.id.action_exit:
                 finish();
                 break;
-            case R.id.action_close:
-                closeSocket();
-                initData(getCurentTab());
-                break;
+//            case R.id.action_close:
+//                closeSocket();
+//                initData(getCurentTab());
+//                break;
             case R.id.action_edit_title:
                 editTitle();
                 break;
@@ -501,6 +493,7 @@ public class MainActivity extends BaseActivity implements OnClickListener,
     @Override
     protected void onDestroy() {
         closeSocket();
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 

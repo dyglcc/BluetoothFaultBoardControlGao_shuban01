@@ -101,7 +101,6 @@ public class FaultboardOption implements BluetoothListener {
 
     public void bluetoothConnect() {
         blueToothManager.connect(0, "");
-//		showBlueToothDevice();
     }
 
     public void setArray(ArrayList<Relay> relays) {
@@ -195,7 +194,7 @@ public class FaultboardOption implements BluetoothListener {
     }
 
     protected void closeBluetoothSocket() {
-        if (blueToothManager.isBluetoothCononected() == false) {
+        if (!blueToothManager.isBluetoothCononected()) {
             return;
         }
         blueToothManager.close();

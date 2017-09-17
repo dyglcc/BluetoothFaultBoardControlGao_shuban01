@@ -30,8 +30,6 @@ public class BluetoothManager {
 
     private boolean needAutoBond = true;
 
-    private boolean bluetoothCononected = false;
-
     private int length = 19;
 
     public BluetoothManager(Context context, BluetoothListener blueToothListener) {
@@ -141,11 +139,8 @@ public class BluetoothManager {
 //					return;
 //				}
 //			}
-                    if (bluetoothCononected == false) {
+                    if (!isBluetoothCononected()) {
                         bluetoothSocket = new Socket("192.168.4.1", 9000);
-                        if (bluetoothSocket.isConnected()) {
-                            bluetoothCononected = true;
-                        }
                     }
                     if (BluetoothManager.this.blueToothListener != null) {
                         BluetoothManager.this.blueToothListener.optionCallBack(
@@ -180,7 +175,7 @@ public class BluetoothManager {
     }
 
     public void sendData(final byte[] data, final int id) {
-        if (bluetoothCononected == false) {
+        if (!isBluetoothCononected()) {
             error(" has not connected !");
             return;
         }
@@ -232,36 +227,29 @@ public class BluetoothManager {
     private void closeIO() throws IOException {
         if (os != null) {
             os.close();
+            os = null;
         }
         if (is != null) {
             is.close();
+            is = null;
         }
     }
 
     public void close() {
         try {
-//			if (bluetoothPairReceiver != null) {
-//				context.unregisterReceiver(bluetoothPairReceiver);
-//			}
             closeIO();
             if (bluetoothSocket != null) {
                 bluetoothSocket.close();
             }
-            bluetoothCononected = false;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean isNeedAutoBond() {
-        return needAutoBond;
-    }
-
-    public void setNeedAutoBond(boolean needAutoBond) {
-        this.needAutoBond = needAutoBond;
-    }
-
     public boolean isBluetoothCononected() {
-        return bluetoothCononected;
+        if (bluetoothSocket != null) {
+            return bluetoothSocket.isConnected();
+        }
+        return false;
     }
 }
